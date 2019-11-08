@@ -1,0 +1,76 @@
+local M = {}
+
+local operator = {}
+
+local function distribute(ids, x, y)
+    local commands = {}
+    local max
+    local min
+    local list = {}
+    -- Find the max/min of any axis
+    for _, id in pairs(ids) do
+        if editor.can_get(id, "position") then
+            local position = editor.get(id, "position")
+            max = math.max(position[1] * x, position[2] * y, max or -math.huge)
+            min = math.min(y == 0 and position[1] * x or position[2] * y, min or math.huge)
+            table.insert(list, {id=id, value=position[1]*x + position[2]*y})
+        end
+    end
+    -- Sort the list from lowest to highest
+    table.sort(list, function(a, b) return a.value < b.value end)
+    local distance = (max - min) / (#list - 1)
+    for index, data in pairs(list) do
+        local id = data.id
+        local position = editor.get(id, "position")
+
+        position[1] = position[1] * (1 - x) + (min * x) + distance * (index-1) * x
+        position[2] = position[2] * (1 - y) + (min * y) + distance * (index-1) * y
+
+        table.insert(commands, {
+            action = "set",
+            node_id = id,
+            property = "position",
+            value = position
+        })
+    end
+    return commands
+end
+
+local function active(opts)
+    for _, id in pairs(opts.selection) do
+        if not editor.can_set(id, "position") then
+            return false
+        end
+    end
+    return #opts.selection > 1
+end
+
+function M.get_commands()
+    return {
+        {
+            label="Distribute Vertical",
+            locations = {"Edit"},
+            query = {
+                selection = {type = "outline", cardinality = "many"}
+            },
+            active = active,
+            run = function(opts)
+                return distribute(opts.selection, 0, 1)
+            end
+        },
+        {
+            label="Distribute Horizontal",
+            locations = {"Edit"},
+            query = {
+                selection = {type = "outline", cardinality = "many"}
+            },
+            active = active,
+            run = function(opts)
+                return distribute(opts.selection, 1, 0)
+            end
+        }
+    }
+end
+
+
+return M
