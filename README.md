@@ -1,13 +1,13 @@
-# Welcome to Defold
+# Distribute
 
-This project was created from the "empty" project template.
+## State
+This extension is currently not very usable. Before I can make this truly useful I need access to a nodes pivot and parent. See [#1](https://github.com/Jerakin/editor-script-distribute/issues/4) and [#4](https://github.com/Jerakin/editor-script-distribute/issues/4) 
 
-The settings in ["game.project"](defold://open?path=/game.project) are all the default. A bootstrap empty ["main.collection"](defold://open?path=/main/main.collection) is included.
+## Install
+You can use the these editor scripts in your own project by adding this project as a [Defold library dependency](https://www.defold.com/manuals/libraries/). Open your game.project file and in the dependencies field under project add:  
+https://github.com/Jerakin/editor-script-distribute/archive/master.zip
 
-Check out [the documentation pages](https://defold.com/learn) for examples, tutorials, manuals and API docs.
+## Editor Script
+This extension adds a few distribution tools to be used in your gui scenes.
 
-If you run into trouble, help is available in [our forum](https://forum.defold.com).
-
-Happy Defolding!
-
----
+![align](/.github/distribute.gif)
