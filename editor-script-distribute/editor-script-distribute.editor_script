@@ -1,117 +1,31 @@
 local M = {}
 
-local min_max_map = {[-1]=math.min, [1]=math.max}
+local operator = {}
 
-
-local function sum(T)
-    local result = 0
-    for _, value in pairs(T) do
-        result = result + value
-    end
-    return result
-end
-
-local function scalar(v1, v2)
-    return  {v1[1]*v2[1], v1[2]*v2[2], v1[3]*v2[3]}
-end
-
-local function rotate_point(x, y, rotation)
-    local angle = math.rad(rotation)
-    local x_d =  x * math.cos(angle) + y * math.sin(angle)
-    local y_d = -x * math.sin(angle) + y * math.cos(angle)
-    return x_d, y_d
-end
-
-local function get_rotated_size(width, height, rotation)
-    local max_y = height * 0.5
-    local max_x = width * 0.5
-    local min_y = -max_y
-    local min_x = -max_x
-
-    local x_points = {}
-    local y_points = {}
-    
-    for _, p in pairs{{min_x,min_y}, {min_x, max_y}, {max_x, min_y}, {max_x, max_y}} do
-        local x, y = rotate_point(p[1], p[2], rotation)
-        table.insert(x_points, x)
-        table.insert(y_points, y)
-    end
-    -- Return the calculated "bounding box"
-    return {math.max(table.unpack(x_points)) - math.min(table.unpack(x_points)), math.max(table.unpack(y_points)) - math.min(table.unpack(y_points)), 0}
-end
-
-local function center(ids, x, y)
+local function distribute(ids, x, y)
     local transactions = {}
-    local target_x = {}
-    local target_y = {}
+    local max
+    local min
+    local list = {}
+    -- Find the max/min of any axis
     for _, id in pairs(ids) do
         if editor.can_get(id, "position") then
             local position = editor.get(id, "position")
-            table.insert(target_x, position[1])
-            table.insert(target_y, position[2])
+            max = math.max(position[1] * x, position[2] * y, max or -math.huge)
+            min = math.min(y == 0 and position[1] * x or position[2] * y, min or math.huge)
+            table.insert(list, {id=id, value=position[1]*x + position[2]*y})
         end
     end
-    -- Calculate the avarage new value if #target_* is more than 0
-    target_x = #target_x and sum(target_x) / #target_x or target_x
-    target_y = #target_y and sum(target_y) / #target_y or target_y
-    
-    for _, id in pairs(ids) do
+    -- Sort the list from lowest to highest
+    table.sort(list, function(a, b) return a.value < b.value end)
+    local distance = (max - min) / (#list - 1)
+    for index, data in pairs(list) do
+        local id = data.id
         local position = editor.get(id, "position")
-        -- multiply the average new value with the input x to 0 out the axis we don't wnt
-        position[1] = position[1] - (position[1] * x) + (target_x * x)
-        position[2] = position[2] - (position[2] * y) + (target_y * y)
-        table.insert(transactions, editor.tx.set(id, "position", {position[1], position[2], position[3]}))
-    end
-    editor.transact(transactions)
-end
 
-local function get_bounding_box_of_node(id)
-    local size = {0, 0, 0}
-    local scale = {1, 1, 1}
-    if editor.can_get(id, "size") then
-        size = editor.get(id, "size")
-    end
-    if editor.can_get(id, "scale") then
-        scale = editor.get(id, "scale")
-    end
-    if editor.can_get(id, "rotation") then
-        local rotation = editor.get(id, "rotation")
-        local normalize_size = scalar(size, scale)
-        return get_rotated_size(normalize_size[1], normalize_size[2], rotation[3])
-    else
-        return scalar(size, scale)
-    end
-end
+        position[1] = position[1] * (1 - x) + (min * x) + distance * (index-1) * x
+        position[2] = position[2] * (1 - y) + (min * y) + distance * (index-1) * y
 
-local function align(ids)
-    
-end
-
-local function align(ids, x, y, f)
-    local transactions = {}
-    local target_x
-    local target_y
-    
-    -- First we find the target_x and y
-    for _, id in pairs(ids) do
-        if editor.can_get(id, "position") then
-            local position = editor.get(id, "position")
-            local pos_x = position[1]
-            local pos_y = position[2]
-            local bounding_box = get_bounding_box_of_node(id)
-            pos_x = pos_x + (x * f * bounding_box[1] * 0.5)
-            pos_y = pos_y + (y * f * bounding_box[2] * 0.5)
-            target_x = min_max_map[f](pos_x, target_x or pos_x)
-            target_y = min_max_map[f](pos_y, target_y or pos_y)
-        end
-    end
-
-    -- Now with the max/min found we can position them
-    for _, id in pairs(ids) do
-        local position = editor.get(id, "position")
-        local bounding_box = get_bounding_box_of_node(id)
-        position[1] = position[1] - (position[1] * x) + (target_x * x) - (x * f * bounding_box[1] * 0.5)
-        position[2] = position[2] - (position[2] * y) + (target_y * y) - (y * f * bounding_box[2] * 0.5)
         table.insert(transactions, editor.tx.set(id, "position", {position[1], position[2], position[3]}))
     end
     editor.transact(transactions)
@@ -129,72 +43,29 @@ end
 function M.get_commands()
     return {
         {
-            label="Align Right",
+            label="Distribute Vertical",
             locations = {"Edit"},
             query = {
                 selection = {type = "outline", cardinality = "many"}
             },
             active = active,
             run = function(opts)
-                return align(opts.selection, 1, 0, 1)
+                return distribute(opts.selection, 0, 1)
             end
         },
         {
-            label="Align Left",
+            label="Distribute Horizontal",
             locations = {"Edit"},
             query = {
                 selection = {type = "outline", cardinality = "many"}
             },
             active = active,
             run = function(opts)
-                return align(opts.selection, 1, 0, -1)
-            end
-        },
-        {
-            label="Align Top",
-            locations = {"Edit"},
-            query = {
-                selection = {type = "outline", cardinality = "many"}
-            },
-            active = active,
-            run = function(opts)
-                return align(opts.selection, 0, 1, 1)
-            end
-        },
-        {
-            label="Align Down",
-            locations = {"Edit"},
-            query = {
-                selection = {type = "outline", cardinality = "many"}
-            },
-            active = active,
-            run = function(opts)
-                return align(opts.selection, 0, 1, -1)
-            end
-        },
-        {
-            label="Align Vertical Center",
-            locations = {"Edit"},
-            query = {
-                selection = {type = "outline", cardinality = "many"}
-            },
-            active = active,
-            run = function(opts)
-                return center(opts.selection, 1, 0)
-            end
-        },
-        {
-            label="Align Horizontal Center",
-            locations = {"Edit"},
-            query = {
-                selection = {type = "outline", cardinality = "many"}
-            },
-            active = active,
-            run = function(opts)
-                return center(opts.selection, 0, 1)
+                return distribute(opts.selection, 1, 0)
             end
         }
     }
 end
+
 
 return M
