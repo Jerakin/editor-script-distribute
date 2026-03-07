@@ -2,6 +2,65 @@ local M = {}
 
 local operator = {}
 
+
+local function scalar(v1, v2)
+    return  {v1[1]*v2[1], v1[2]*v2[2], v1[3]*v2[3]}
+end
+
+
+local function can_get_size(node)
+    if editor.can_get(node, "texture_size") then
+        return true
+    end
+    if editor.can_get(node, "manual_size") then
+        return true
+    end
+    return false
+end
+
+local function get_size(node)
+    if editor.can_get(node, "texture_size") then
+        return editor.get(node, "texture_size")
+    end
+
+    if editor.can_get(node, "manual_size") then
+        return editor.get(node, "manual_size")
+    end
+end
+
+
+local function get_pivot_modifier(node)
+    local position = editor.get(node, "position")
+    local size = scalar(get_size(node), editor.get(node, "scale"))
+
+    if editor.can_get(node, "pivot") then
+        local pivot = editor.get(node, "pivot")
+        if pivot == "pivot-center" then
+            return {0, 0, 0}
+        elseif pivot == "pivot-e" then
+            return {size[1] * 0.5, 0, 0}
+        elseif pivot == "pivot-w" then
+            return {-size[1] * 0.5, 0, 0}
+        elseif pivot == "pivot-n" then
+            return {0, size[2] * 0.5, 0}
+        elseif pivot == "pivot-s" then
+            return {0, -size[2] * 0.5, 0}
+        elseif pivot == "pivot-ne" then
+            return {size[1] * 0.5, size[2] * 0.5, 0}
+        elseif pivot == "pivot-nw" then
+            return {-size[1] * 0.5, size[2] * 0.5, 0}
+        elseif pivot == "pivot-se" then
+            return {size[1] * 0.5, -size[2] * 0.5, 0}
+        elseif pivot == "pivot-sw" then
+            return {-size[1] * 0.5, -size[2] * 0.5, 0}
+
+        end
+    else
+        return position
+    end
+end
+
+
 local function distribute(ids, x, y)
     local transactions = {}
     local max
@@ -11,9 +70,13 @@ local function distribute(ids, x, y)
     for _, id in pairs(ids) do
         if editor.can_get(id, "position") then
             local position = editor.get(id, "position")
-            max = math.max(position[1] * x, position[2] * y, max or -math.huge)
-            min = math.min(y == 0 and position[1] * x or position[2] * y, min or math.huge)
-            table.insert(list, {id=id, value=position[1]*x + position[2]*y})
+            local pivot_modifier = get_pivot_modifier(id)
+            local pos_x = (position[1]-pivot_modifier[1]) * x
+            local pos_y = (position[2]-pivot_modifier[2]) * y
+            
+            max = math.max(pos_x, pos_y, max or -math.huge)
+            min = math.min(y == 0 and pos_x or pos_y, min or math.huge)
+            table.insert(list, {id=id, value=pos_x + pos_y})
         end
     end
     -- Sort the list from lowest to highest
@@ -22,10 +85,10 @@ local function distribute(ids, x, y)
     for index, data in pairs(list) do
         local id = data.id
         local position = editor.get(id, "position")
-
+        local pivot_modifier = get_pivot_modifier(id)
         position[1] = position[1] * (1 - x) + (min * x) + distance * (index-1) * x
         position[2] = position[2] * (1 - y) + (min * y) + distance * (index-1) * y
-
+        
         table.insert(transactions, editor.tx.set(id, "position", {position[1], position[2], position[3]}))
     end
     editor.transact(transactions)
