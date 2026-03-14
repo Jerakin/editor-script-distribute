@@ -1,5 +1,26 @@
 local M = {}
 
+
+
+local function _get_parent_position(id, position)
+    if editor.can_get(id, "parent") and editor.can_get(id, "position") then
+        local parent = editor.get(id, "parent")
+        if editor.can_get(parent, "position") then
+            local pos = editor.get(parent, "position")
+            position[1] = position[1] + pos[1]
+            position[2] = position[2] + pos[2]
+        end
+        _get_parent_position(parent, position)
+        return position
+    end
+end
+
+local function get_screen_position(id)
+    local position = editor.get(id, "position")
+    return _get_parent_position(id, position)
+end
+
+
 local function distribute(ids, axis)
     local transactions = {}
     local max
@@ -8,24 +29,27 @@ local function distribute(ids, axis)
     -- Find the max/min of any axis
     for _, id in pairs(ids) do
         if editor.can_get(id, "position") then
-            local position = editor.get(id, "position")
-            max = math.max(position[axis], max or -math.huge)
-            min = math.min(position[axis], min or math.huge)
-            table.insert(list, {id=id, value=position[axis]})
+            local screen_position = get_screen_position(id)
+            max = math.max(screen_position[axis], max or -math.huge)
+            min = math.min(screen_position[axis], min or math.huge)
+            table.insert(list, {id=id, value=screen_position[axis]})
         end
     end
-    
+
     -- Sort the list from lowest to highest
     table.sort(list, function(a, b) return a.value < b.value end)
     local distance = (max - min) / (#list - 1)
     for index, data in pairs(list) do
         local id = data.id
         local position = editor.get(id, "position")
-        position[axis] = min + distance * (index-1)
+        local screen_position = get_screen_position(id)
+        local target = min + distance * (index-1)
+        position[axis] = (target - screen_position[axis]) + position[axis] 
         table.insert(transactions, editor.tx.set(id, "position", position))
     end
     editor.transact(transactions)
 end
+
 
 local function active(opts)
     for _, id in pairs(opts.selection) do
