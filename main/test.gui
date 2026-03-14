@@ -1,0 +1,362 @@
+fonts {
+  name: "default"
+  font: "/builtins/fonts/default.font"
+}
+nodes {
+  position {
+    x: 812.0
+    y: 611.0
+  }
+  size {
+    x: 200.0
+    y: 100.0
+  }
+  type: TYPE_TEXT
+  text: "Distribute Vertical"
+  font: "default"
+  id: "text1"
+  inherit_alpha: true
+}
+nodes {
+  position {
+    x: -28.0
+    y: -138.0
+    z: 5.0
+  }
+  size {
+    x: 50.0
+    y: 50.0
+  }
+  color {
+    x: 0.0
+    y: 0.102
+    z: 0.502
+  }
+  type: TYPE_BOX
+  id: "box1"
+  parent: "text1"
+  inherit_alpha: true
+}
+nodes {
+  position {
+    x: -30.0
+    y: -383.66666
+    z: 5.0
+  }
+  size {
+    x: 50.0
+    y: 50.0
+  }
+  color {
+    x: 0.0
+    y: 0.102
+    z: 0.502
+  }
+  type: TYPE_BOX
+  id: "box"
+  parent: "text1"
+  inherit_alpha: true
+}
+nodes {
+  position {
+    x: -3.0
+    y: -463.0
+    z: 0.0
+  }
+  size {
+    x: 50.0
+    y: 50.0
+  }
+  color {
+    x: 0.102
+    y: 0.0
+    z: 0.408
+  }
+  type: TYPE_BOX
+  id: "box2"
+  pivot: PIVOT_E
+  parent: "text1"
+  inherit_alpha: true
+}
+nodes {
+  position {
+    x: -27.0
+    y: -207.33333
+  }
+  size {
+    x: 50.0
+    y: 50.0
+  }
+  color {
+    x: 0.102
+    y: 0.0
+    z: 0.408
+  }
+  type: TYPE_BOX
+  id: "box5"
+  parent: "text1"
+  inherit_alpha: true
+}
+nodes {
+  position {
+    x: 88.0
+    y: 611.0
+  }
+  size {
+    x: 200.0
+    y: 100.0
+  }
+  type: TYPE_TEXT
+  text: "Distribute\n"
+  "Horizontal"
+  font: "default"
+  id: "text"
+  inherit_alpha: true
+}
+nodes {
+  position {
+    x: -117.0
+    y: -147.0
+    z: 0.0
+  }
+  size {
+    x: 50.0
+    y: 50.0
+  }
+  color {
+    x: 0.6
+    y: 0.0
+    z: 0.0
+  }
+  type: TYPE_BOX
+  id: "box6"
+  parent: "text"
+  inherit_alpha: true
+}
+nodes {
+  position {
+    x: 136.0
+    y: -182.0
+    z: 0.0
+  }
+  size {
+    x: 50.0
+    y: 50.0
+  }
+  color {
+    x: 0.6
+    y: 0.0
+    z: 0.0
+  }
+  type: TYPE_BOX
+  id: "box12"
+  parent: "text"
+  inherit_alpha: true
+}
+nodes {
+  position {
+    x: -32.666668
+    y: -173.0
+    z: 0.0
+  }
+  size {
+    x: 50.0
+    y: 50.0
+  }
+  color {
+    x: 0.702
+    y: 0.102
+    z: 0.102
+  }
+  type: TYPE_BOX
+  id: "box8"
+  parent: "text"
+  inherit_alpha: true
+}
+nodes {
+  position {
+    x: 51.666668
+    y: -167.0
+    z: 0.0
+  }
+  size {
+    x: 50.0
+    y: 50.0
+  }
+  color {
+    x: 0.702
+    y: 0.102
+    z: 0.102
+  }
+  type: TYPE_BOX
+  id: "box13"
+  parent: "text"
+  inherit_alpha: true
+}
+nodes {
+  position {
+    x: 1459.0
+    y: 611.0
+  }
+  size {
+    x: 200.0
+    y: 100.0
+  }
+  type: TYPE_TEXT
+  text: "Distribute\n"
+  "Horizontal\n"
+  "Parent"
+  font: "default"
+  id: "text2"
+  inherit_alpha: true
+}
+nodes {
+  position {
+    x: -191.0
+    y: -172.0
+  }
+  size {
+    x: 50.0
+    y: 50.0
+  }
+  color {
+    x: 0.6
+    y: 0.0
+    z: 0.0
+  }
+  type: TYPE_BOX
+  id: "box3"
+  parent: "text2"
+  inherit_alpha: true
+}
+nodes {
+  position {
+    x: 184.0
+    y: -182.0
+  }
+  size {
+    x: 50.0
+    y: 50.0
+  }
+  color {
+    x: 0.6
+    y: 0.0
+    z: 0.0
+  }
+  type: TYPE_BOX
+  id: "box4"
+  parent: "text2"
+  inherit_alpha: true
+}
+nodes {
+  position {
+    x: -100.0
+    y: -50.0
+  }
+  size {
+    x: 50.0
+    y: 50.0
+  }
+  color {
+    y: 0.8
+    z: 0.5019608
+  }
+  type: TYPE_BOX
+  id: "box11"
+  parent: "text2"
+  inherit_alpha: true
+}
+nodes {
+  position {
+    x: 9.333333
+    y: -119.0
+  }
+  size {
+    x: 50.0
+    y: 50.0
+  }
+  color {
+    x: 0.702
+    y: 0.102
+    z: 0.102
+  }
+  type: TYPE_BOX
+  id: "box7"
+  parent: "box11"
+  inherit_alpha: true
+}
+nodes {
+  position {
+    x: 100.0
+    y: -50.0
+  }
+  size {
+    x: 50.0
+    y: 50.0
+  }
+  color {
+    y: 0.8
+    z: 0.5019608
+  }
+  type: TYPE_BOX
+  id: "box14"
+  parent: "text2"
+  inherit_alpha: true
+}
+nodes {
+  position {
+    x: 1.666667
+    y: -129.0
+  }
+  size {
+    x: 50.0
+    y: 50.0
+  }
+  color {
+    x: 0.702
+    y: 0.102
+    z: 0.102
+  }
+  type: TYPE_BOX
+  id: "box9"
+  parent: "box14"
+  inherit_alpha: true
+}
+nodes {
+  position {
+    y: -50.0
+  }
+  size {
+    x: 50.0
+    y: 50.0
+  }
+  color {
+    y: 0.8
+    z: 0.5019608
+  }
+  type: TYPE_BOX
+  id: "box15"
+  parent: "text2"
+  inherit_alpha: true
+}
+nodes {
+  position {
+    x: -8.333333
+    y: -136.0
+  }
+  size {
+    x: 50.0
+    y: 50.0
+  }
+  color {
+    x: 0.702
+    y: 0.102
+    z: 0.102
+  }
+  type: TYPE_BOX
+  id: "box10"
+  parent: "box15"
+  inherit_alpha: true
+}
+material: "/builtins/materials/gui.material"
+adjust_reference: ADJUST_REFERENCE_PARENT
