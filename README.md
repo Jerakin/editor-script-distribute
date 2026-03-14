@@ -1,7 +1,7 @@
 # Distribute
 
-## State
-This extension is currently not very usable. Before I can make this truly useful I need access to a nodes pivot and parent. See [#1](https://github.com/Jerakin/editor-script-distribute/issues/4) and [#4](https://github.com/Jerakin/editor-script-distribute/issues/4) 
+Visually distribute your gui nodes or game objects. The tool finds the min and max of your nodes and then distributes the other nodes between these points.
+
 
 ## Install
 You can use the these editor scripts in your own project by adding this project as a [Defold library dependency](https://www.defold.com/manuals/libraries/). Open your game.project file and in the dependencies field under project add:  
