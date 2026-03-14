@@ -1,8 +1,6 @@
 local M = {}
 
-local operator = {}
-
-local function distribute(ids, x, y)
+local function distribute(ids, axis)
     local transactions = {}
     local max
     local min
@@ -11,22 +9,20 @@ local function distribute(ids, x, y)
     for _, id in pairs(ids) do
         if editor.can_get(id, "position") then
             local position = editor.get(id, "position")
-            max = math.max(position[1] * x, position[2] * y, max or -math.huge)
-            min = math.min(y == 0 and position[1] * x or position[2] * y, min or math.huge)
-            table.insert(list, {id=id, value=position[1]*x + position[2]*y})
+            max = math.max(position[axis], max or -math.huge)
+            min = math.min(position[axis], min or math.huge)
+            table.insert(list, {id=id, value=position[axis]})
         end
     end
+    
     -- Sort the list from lowest to highest
     table.sort(list, function(a, b) return a.value < b.value end)
     local distance = (max - min) / (#list - 1)
     for index, data in pairs(list) do
         local id = data.id
         local position = editor.get(id, "position")
-
-        position[1] = position[1] * (1 - x) + (min * x) + distance * (index-1) * x
-        position[2] = position[2] * (1 - y) + (min * y) + distance * (index-1) * y
-
-        table.insert(transactions, editor.tx.set(id, "position", {position[1], position[2], position[3]}))
+        position[axis] = min + distance * (index-1)
+        table.insert(transactions, editor.tx.set(id, "position", position))
     end
     editor.transact(transactions)
 end
@@ -50,7 +46,7 @@ function M.get_commands()
             },
             active = active,
             run = function(opts)
-                return distribute(opts.selection, 0, 1)
+                return distribute(opts.selection, 2)
             end
         },
         {
@@ -61,7 +57,7 @@ function M.get_commands()
             },
             active = active,
             run = function(opts)
-                return distribute(opts.selection, 1, 0)
+                return distribute(opts.selection, 1)
             end
         }
     }
