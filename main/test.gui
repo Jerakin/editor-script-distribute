@@ -61,7 +61,6 @@ nodes {
   position {
     x: -3.0
     y: -463.0
-    z: 0.0
   }
   size {
     x: 50.0
@@ -117,7 +116,6 @@ nodes {
   position {
     x: -117.0
     y: -147.0
-    z: 0.0
   }
   size {
     x: 50.0
@@ -137,7 +135,6 @@ nodes {
   position {
     x: 136.0
     y: -182.0
-    z: 0.0
   }
   size {
     x: 50.0
@@ -157,7 +154,6 @@ nodes {
   position {
     x: -32.666668
     y: -173.0
-    z: 0.0
   }
   size {
     x: 50.0
@@ -177,7 +173,6 @@ nodes {
   position {
     x: 51.666668
     y: -167.0
-    z: 0.0
   }
   size {
     x: 50.0
@@ -212,8 +207,9 @@ nodes {
 }
 nodes {
   position {
-    x: -191.0
-    y: -172.0
+    x: -200.0
+    y: -169.0
+    z: 0.0
   }
   size {
     x: 50.0
@@ -231,8 +227,9 @@ nodes {
 }
 nodes {
   position {
-    x: 184.0
-    y: -182.0
+    x: 200.0
+    y: -169.0
+    z: 0.0
   }
   size {
     x: 50.0
@@ -268,8 +265,9 @@ nodes {
 }
 nodes {
   position {
-    x: 9.333333
+    x: 0.0
     y: -119.0
+    z: 0.0
   }
   size {
     x: 50.0
@@ -305,8 +303,9 @@ nodes {
 }
 nodes {
   position {
-    x: 1.666667
-    y: -129.0
+    x: 0.0
+    y: -119.0
+    z: 0.0
   }
   size {
     x: 50.0
@@ -324,6 +323,7 @@ nodes {
 }
 nodes {
   position {
+    x: -24.0
     y: -50.0
   }
   size {
@@ -341,8 +341,9 @@ nodes {
 }
 nodes {
   position {
-    x: -8.333333
-    y: -136.0
+    x: 24.0
+    y: -119.0
+    z: 0.0
   }
   size {
     x: 50.0
